@@ -113,6 +113,7 @@ fun CountdownScreen(
                 text = { Text("Create") },
                 icon = { Icon(Icons.Filled.Add, contentDescription = "") },
                 onClick = {
+                    selectedCountdown = null
                     bottomSheetState.expandBottomSheet()
                 }
             )
