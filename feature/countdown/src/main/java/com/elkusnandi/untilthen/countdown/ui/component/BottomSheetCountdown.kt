@@ -4,12 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -37,10 +34,7 @@ fun BottomSheetCountdown(
     countdown: Countdown?,
     modifier: Modifier = Modifier,
     onCreateCountdown: (String, Long, Long?) -> Unit,
-    state: BottomSheetCountState = rememberBottomSheetCountState(
-        countdown?.title,
-        countdown?.dateTime.toString()
-    )
+    state: BottomSheetCountState
 ) {
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
@@ -64,8 +58,8 @@ fun BottomSheetCountdown(
             sheetState = sheetState
         ) {
 
-            LaunchedEffect(key1 = state.dateTimeText) {
-                val selectedDateMillis = state.dateTimeText
+            LaunchedEffect(key1 = state.dateTimeValue) {
+                val selectedDateMillis = state.dateTimeValue
                 state.updateDateTime(selectedDateMillis)
             }
 
@@ -84,13 +78,18 @@ fun BottomSheetCountdown(
                             showDatePicker = true
                         },
                     enabled = false,
-                    value = if (state.dateTimeText != null)
-                        ZonedDateTime.ofInstant(
-                            Instant.ofEpochSecond(state.dateTimeText!!),
-                            ZoneId.systemDefault()
-                        ).toString() else
+                    value = if (state.dateTimeValue != null)
+                        state.dateTimeValue?.let {
+                            ZonedDateTime.ofInstant(
+                                Instant.ofEpochSecond(it),
+                                ZoneId.systemDefault()
+                            ).toString()
+                        } ?: ""
+                    else
                         stringResource(id = R.string.select_date_time),
-                    onValueChange = { },
+                    onValueChange = {
+                        // not directly manipulated
+                    },
                     label = { Text(text = stringResource(id = R.string.date_time)) }
                 )
 
@@ -99,7 +98,7 @@ fun BottomSheetCountdown(
                         sheetState.hide()
                     }.invokeOnCompletion {
                         val title = state.titleText
-                        val dateTime = state.dateTimeText
+                        val dateTime = state.dateTimeValue
                         if (title != null && dateTime != null) {
                             onCreateCountdown(title, dateTime, countdown?.id)
                         }
@@ -112,47 +111,25 @@ fun BottomSheetCountdown(
             }
         }
 
-        if (showDatePicker) {
-            DatePickerDialog(
-                onDismissRequest = {
-                    showDatePicker = false
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            state.updateDateTime(datePickerState.selectedDateMillis?.div(1000))
-                            showDatePicker = false
-                        }
-                    ) {
-                        Text(text = stringResource(id = R.string.test))
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            showDatePicker = false
-                        }
-                    ) {
-                        Text(text = stringResource(id = R.string.cancel))
-                    }
-                }
-            ) {
-                DatePicker(
-                    state = datePickerState
-                )
-            }
-        }
+        DatePickerCountdownDialog(
+            showDatePicker = showDatePicker,
+            state = datePickerState,
+            onDismiss = {
+                showDatePicker = false
+            },
+            onConfirm = {
+                state.updateDateTime(datePickerState.selectedDateMillis?.div(1000))
+                showDatePicker = false
+            })
     }
 
 }
 
-class BottomSheetCountState(title: String? = null, dateTime: String? = null) {
-    var titleText by mutableStateOf(title)
+class BottomSheetCountState() {
+    var titleText by mutableStateOf<String?>(null)
         private set
 
-    var dateTimeText by mutableStateOf(
-        if (dateTime == null) null else ZonedDateTime.parse(dateTime).toEpochSecond()
-    )
+    var dateTimeValue by mutableStateOf<Long?>(null)
         private set
 
     var showBottomSheet by mutableStateOf(false)
@@ -163,36 +140,33 @@ class BottomSheetCountState(title: String? = null, dateTime: String? = null) {
     }
 
     fun updateDateTime(dateTime: Long?) {
-        dateTimeText = dateTime
+        dateTimeValue = dateTime
     }
 
-    fun expandBottomSheet(title: String? = null, dateTime: Long? = null) {
-        titleText = title
-        dateTimeText = dateTime
+    fun expandBottomSheet() {
         showBottomSheet = true
     }
 
     fun hideBottomSheet() {
         showBottomSheet = false
         titleText = null
-        dateTimeText = null
+        dateTimeValue = null
     }
 }
 
 @Composable
 fun rememberBottomSheetCountState(
-    title: String? = null,
-    dateTime: String? = null
 ): BottomSheetCountState {
     return remember {
-        BottomSheetCountState(title, dateTime)
+        BottomSheetCountState()
     }
 }
 
 @Preview
 @Composable
 private fun ButtonSheetCountdownPreview() {
+    val state = rememberBottomSheetCountState()
     UntilThenTheme {
-        BottomSheetCountdown(null, Modifier, { _, _, _ -> })
+        BottomSheetCountdown(null, Modifier, { _, _, _ -> }, state)
     }
 }
