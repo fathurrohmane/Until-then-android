@@ -8,7 +8,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlin.text.Typography.dagger
 
 @Module
 @InstallIn(SingletonComponent::class)

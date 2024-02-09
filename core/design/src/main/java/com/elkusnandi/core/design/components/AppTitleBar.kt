@@ -15,7 +15,8 @@ import com.elkusnandi.core.design.theme.UntilThenTheme
 fun AppTitleBar(modifier: Modifier = Modifier) {
     TopAppBar(
         title = { Text(text = "Until then") },
-        colors = topAppBarColors(containerColor = Color.Transparent)
+        colors = topAppBarColors(containerColor = Color.Transparent),
+        modifier = modifier
     )
 }
 
