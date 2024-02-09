@@ -14,12 +14,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.elkusnandi.core.common.addZeroPrefix
 import com.elkusnandi.core.common.getDuration
+import com.elkusnandi.core.design.R
 import com.elkusnandi.core.design.theme.UntilThenTheme
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
@@ -42,24 +44,40 @@ fun CountDownItem(
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(8.dp)
         ) {
-            Text(
-                text = title,
-                fontSize = 20.sp,
+            Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.titleMedium
-            )
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.Top,
             ) {
-                SingleTimeItem(duration[TimeUnit.DAYS].toString(), "Days")
+                SingleTimeItem(
+                    duration[TimeUnit.DAYS].toString(),
+                    stringResource(id = R.string.days)
+                )
                 TimeDivider()
-                SingleTimeItem(duration[TimeUnit.HOURS].toString(), "Hours")
+                SingleTimeItem(
+                    duration[TimeUnit.HOURS].toString(),
+                    stringResource(id = R.string.hours)
+                )
                 TimeDivider()
-                SingleTimeItem(duration[TimeUnit.MINUTES].toString(), "Minutes")
+                SingleTimeItem(
+                    duration[TimeUnit.MINUTES].toString(),
+                    stringResource(id = R.string.minutes)
+                )
                 TimeDivider()
-                SingleTimeItem(duration[TimeUnit.SECONDS].toString(), "Seconds")
+                SingleTimeItem(
+                    duration[TimeUnit.SECONDS].toString(),
+                    stringResource(id = R.string.seconds)
+                )
             }
         }
     }
@@ -88,7 +106,7 @@ private fun SingleTimeItem(time: String, title: String) {
 @Preview(showBackground = true)
 @Composable
 private fun SingleTimeItemPreview() {
-    SingleTimeItem("02", "Days")
+    SingleTimeItem("10", "Days")
 }
 
 @Preview
