@@ -1,7 +1,8 @@
 package com.elkusnandi.core.design.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,18 +27,21 @@ import com.elkusnandi.core.design.theme.UntilThenTheme
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CountDownItem(
     title: String,
     duration: HashMap<TimeUnit, Number>,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     Surface(
         modifier = modifier
-            .clickable {
-                onClick()
-            }, shape = RoundedCornerShape(16.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ), shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
@@ -115,6 +119,6 @@ private fun CountDownItemPreview() {
     val title = "Birthday"
     val time = ZonedDateTime.now().plusSeconds(36500L).getDuration()
     UntilThenTheme {
-        CountDownItem(title, time) {}
+        CountDownItem(title, time, Modifier, {}) {}
     }
 }

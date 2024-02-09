@@ -5,4 +5,6 @@
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
     <string name="was">was</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

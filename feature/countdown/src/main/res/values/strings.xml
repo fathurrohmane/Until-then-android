@@ -7,4 +7,6 @@
     <string name="select_date_time">(Select date time)</string>
     <string name="title">Title</string>
     <string name="test">OK</string>
+    <string name="delete_title">Delete this item?</string>
+    <string name="delete_body">This action cannot be undone.</string>
 </resources>

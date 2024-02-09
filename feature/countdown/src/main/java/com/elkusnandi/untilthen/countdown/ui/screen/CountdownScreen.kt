@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -49,9 +50,11 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elkusnandi.core.common.getDuration
+import com.elkusnandi.core.design.components.ConfirmDialog
 import com.elkusnandi.core.design.components.CountDownItem
 import com.elkusnandi.core.design.theme.UntilThenTheme
 import com.elkusnandi.data.countdown.model.Countdown
+import com.elkusnandi.untilthen.countdown.R
 import com.elkusnandi.untilthen.countdown.ui.component.BottomSheetCountdown
 import com.elkusnandi.untilthen.countdown.ui.component.rememberBottomSheetCountState
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,19 +77,24 @@ class CountdownScreenFragment : Fragment() {
         setContent {
             UntilThenTheme {
                 val countdowns = viewModel.countdowns.collectAsLazyPagingItems()
-                CountdownScreen(countdowns) { title, dateTime, countDownId ->
-                    viewModel.addCountdown(
-                        Countdown(
-                            countDownId ?: 0L,
-                            title,
-                            ZonedDateTime.ofInstant(
-                                Instant.ofEpochSecond(dateTime),
-                                ZoneId.systemDefault()
-                            ),
-                            ""
+                CountdownScreen(
+                    countdowns = countdowns,
+                    onCreateCountdown = { title, dateTime, countDownId ->
+                        viewModel.addCountdown(
+                            Countdown(
+                                countDownId ?: 0L,
+                                title,
+                                ZonedDateTime.ofInstant(
+                                    Instant.ofEpochSecond(dateTime),
+                                    ZoneId.systemDefault()
+                                ),
+                                ""
+                            )
                         )
-                    )
-                }
+                    },
+                    onDeleteCountdown = {
+                        viewModel.deleteCountdown(it)
+                    })
             }
         }
     }
@@ -96,10 +104,12 @@ class CountdownScreenFragment : Fragment() {
 @Composable
 fun CountdownScreen(
     countdowns: LazyPagingItems<Countdown>,
-    onCreateCountdown: (String, Long, Long?) -> Unit
+    onCreateCountdown: (String, Long, Long?) -> Unit,
+    onDeleteCountdown: (Countdown) -> Unit,
 ) {
     val bottomSheetState = rememberBottomSheetCountState()
     var selectedCountdown by remember { mutableStateOf<Countdown?>(null) }
+    var showConfirmDialog by remember { mutableStateOf<Countdown?>(null) }
 
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -133,10 +143,15 @@ fun CountdownScreen(
                 }
 
                 is LoadState.NotLoading -> {
-                    CountdownLazyColumn(countdowns, {
-                        selectedCountdown = it
-                        bottomSheetState.expandBottomSheet()
-                    })
+                    CountdownLazyColumn(
+                        countdowns = countdowns,
+                        onClickItem = {
+                            selectedCountdown = it
+                            bottomSheetState.expandBottomSheet()
+                        },
+                        onLongClickItem = {
+                            showConfirmDialog = it
+                        })
                 }
             }
         }
@@ -147,13 +162,28 @@ fun CountdownScreen(
             onCreateCountdown = onCreateCountdown
         )
     }
+
+    if (showConfirmDialog != null) {
+        ConfirmDialog(
+            dialogTitle = stringResource(id = R.string.delete_title),
+            dialogText = stringResource(id = R.string.delete_body),
+            onDismissRequest = {
+                showConfirmDialog = null
+            },
+            onConfirmation = {
+                onDeleteCountdown(showConfirmDialog!!)
+                showConfirmDialog = null
+            })
+    }
+
 }
 
 @Composable
 private fun CountdownLazyColumn(
     countdowns: LazyPagingItems<Countdown>,
-    onClickItem: (Countdown) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClickItem: (Countdown) -> Unit = {},
+    onLongClickItem: (Countdown) -> Unit = {}
 ) {
     val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -194,10 +224,10 @@ private fun CountdownLazyColumn(
 
             CountDownItem(
                 title = countdown.title,
-                duration = countdown.dateTime.getDuration(currentTime = currentTime)
-            ) {
-                onClickItem(countdown)
-            }
+                duration = countdown.dateTime.getDuration(currentTime = currentTime),
+                onClick = { onClickItem(countdown) },
+                onLongClick = { onLongClickItem(countdown) }
+            )
         }
 
         if (countdowns.loadState.append == LoadState.Loading) {
@@ -226,11 +256,11 @@ private fun CountdownScreenPreview() {
     val fakeCountdown =
         flowOf(
             PagingData.from(
-                listOf<Countdown>(Countdown(0L, "Interview", ZonedDateTime.now().plusDays(5), ""))
+                listOf(Countdown(0L, "Interview", ZonedDateTime.now().plusDays(5), ""))
             )
         ).collectAsLazyPagingItems()
 
     UntilThenTheme {
-        CountdownScreen(fakeCountdown) { _, _, _ -> }
+        CountdownScreen(fakeCountdown, { _, _, _ -> }, {})
     }
 }
