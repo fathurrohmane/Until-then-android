@@ -23,9 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,8 +46,12 @@ import com.elkusnandi.core.common.getDuration
 import com.elkusnandi.core.design.components.CountDownItem
 import com.elkusnandi.core.design.theme.UntilThenTheme
 import com.elkusnandi.data.countdown.model.Countdown
+import com.elkusnandi.untilthen.countdown.ui.component.BottomSheetCountdown
+import com.elkusnandi.untilthen.countdown.ui.component.rememberBottomSheetCountState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -139,6 +145,22 @@ private fun UserLazyColumn(
     onClickItem: (Countdown) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val scope = rememberCoroutineScope()
+    var currentTime by remember { mutableStateOf(ZonedDateTime.now()) }
+
+    DisposableEffect(key1 = currentTime) {
+        val job = scope.launch {
+            while (true) {
+                currentTime = ZonedDateTime.now()
+                delay(1000)
+            }
+        }
+
+        onDispose {
+            job.cancel()
+        }
+    }
+
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -147,7 +169,11 @@ private fun UserLazyColumn(
 
         items(countdowns.itemCount, key = countdowns.itemKey { it.id }) {
             val countdown = countdowns[it] ?: return@items
-            CountDownItem(title = countdown.title, duration = countdown.dateTime.getDuration()) {
+
+            CountDownItem(
+                title = countdown.title,
+                duration = countdown.dateTime.getDuration(currentTime = currentTime)
+            ) {
                 onClickItem(countdown)
             }
         }

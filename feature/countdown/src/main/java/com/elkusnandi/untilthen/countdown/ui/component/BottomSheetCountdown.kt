@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.countdown.ui.screen
+package com.elkusnandi.untilthen.countdown.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -74,7 +74,7 @@ fun BottomSheetCountdown(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.titleText ?: "",
                     onValueChange = { state.updateTitle(it) },
-                    label = { Text("Title") }
+                    label = { Text(text = stringResource(id = R.string.title)) }
                 )
 
                 TextField(
@@ -84,13 +84,14 @@ fun BottomSheetCountdown(
                             showDatePicker = true
                         },
                     enabled = false,
-                    value = if (state.dateTimeText != null) ZonedDateTime.ofInstant(
-                        Instant.ofEpochSecond(state.dateTimeText!!),
-                        ZoneId.systemDefault()
-                    ).toString() else
-                        "(Select date time)",
+                    value = if (state.dateTimeText != null)
+                        ZonedDateTime.ofInstant(
+                            Instant.ofEpochSecond(state.dateTimeText!!),
+                            ZoneId.systemDefault()
+                        ).toString() else
+                        stringResource(id = R.string.select_date_time),
                     onValueChange = { },
-                    label = { Text("Date time") }
+                    label = { Text(text = stringResource(id = R.string.date_time)) }
                 )
 
                 Button(onClick = {
@@ -123,7 +124,7 @@ fun BottomSheetCountdown(
                             showDatePicker = false
                         }
                     ) {
-                        Text("OK")
+                        Text(text = stringResource(id = R.string.test))
                     }
                 },
                 dismissButton = {
@@ -132,7 +133,7 @@ fun BottomSheetCountdown(
                             showDatePicker = false
                         }
                     ) {
-                        Text("Cancel")
+                        Text(text = stringResource(id = R.string.cancel))
                     }
                 }
             ) {

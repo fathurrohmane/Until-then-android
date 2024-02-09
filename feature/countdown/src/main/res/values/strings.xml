@@ -2,4 +2,9 @@
     <string name="title_activity_countdown_config">CountdownConfigActivity</string>
     <string name="create">Create</string>
     <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
+    <string name="date_time">Date time</string>
+    <string name="select_date_time">(Select date time)</string>
+    <string name="title">Title</string>
+    <string name="test">OK</string>
 </resources>
