@@ -2,7 +2,7 @@
 androidxCore = "1.12.0"
 androidxLifecycleRuntime = "2.7.0"
 androidxActivityCompose = "1.8.2"
-androidxComposeBom = "2024.01.00"
+androidxComposeBom = "2024.02.00"
 glanceAppwidget = "1.0.0"
 junit4 = "4.13.2"
 androidxTestExtJUnit = "1.1.5"
@@ -28,7 +28,7 @@ mockito = "5.2.1"
 mockitoAndroid = "5.8.0"
 navigationComponent = "2.7.6"
 desugarJdkLibs = "2.0.4"
-uiTooling = "1.6.0"
+uiTooling = "1.6.1"
 
 [libraries]
 android-tools-desugarlibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
