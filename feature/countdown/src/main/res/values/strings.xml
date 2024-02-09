@@ -1,0 +1,5 @@
+<resources>
+    <string name="title_activity_countdown_config">CountdownConfigActivity</string>
+    <string name="create">Create</string>
+    <string name="update">Update</string>
+</resources>

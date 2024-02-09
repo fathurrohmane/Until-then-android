@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/countdown_nav"
+    app:startDestination="@id/countdownScreenFragment">
+
+    <fragment
+        android:id="@+id/countdownScreenFragment"
+        android:name="com.elkusnandi.untilthen.countdown.ui.screen.CountdownScreenFragment"
+        android:label="CountdownScreenFragment" />
+</navigation>
