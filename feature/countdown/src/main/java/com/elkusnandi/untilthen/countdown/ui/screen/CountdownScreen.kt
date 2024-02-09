@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -81,7 +83,7 @@ class CountdownScreenFragment : Fragment() {
                                 Instant.ofEpochSecond(dateTime),
                                 ZoneId.systemDefault()
                             ),
-                            "red"
+                            ""
                         )
                     )
                 }
@@ -118,7 +120,11 @@ fun CountdownScreen(
         Column(modifier = Modifier.padding(paddingValues)) {
             when (countdowns.loadState.refresh) {
                 is LoadState.Loading -> {
-                    // todo
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.width(64.dp)
+                        )
+                    }
                 }
 
                 is LoadState.Error -> {
@@ -126,7 +132,7 @@ fun CountdownScreen(
                 }
 
                 is LoadState.NotLoading -> {
-                    UserLazyColumn(countdowns, {
+                    CountdownLazyColumn(countdowns, {
                         selectedCountdown = it
                         bottomSheetState.expandBottomSheet()
                     })
@@ -143,7 +149,7 @@ fun CountdownScreen(
 }
 
 @Composable
-private fun UserLazyColumn(
+private fun CountdownLazyColumn(
     countdowns: LazyPagingItems<Countdown>,
     onClickItem: (Countdown) -> Unit,
     modifier: Modifier = Modifier
@@ -175,7 +181,6 @@ private fun UserLazyColumn(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
 
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
@@ -220,7 +225,7 @@ private fun CountdownScreenPreview() {
     val fakeCountdown =
         flowOf(
             PagingData.from(
-                listOf<Countdown>()
+                listOf<Countdown>(Countdown(0L, "Interview", ZonedDateTime.now().plusDays(5), ""))
             )
         ).collectAsLazyPagingItems()
 
