@@ -50,6 +50,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elkusnandi.core.common.getDuration
+import com.elkusnandi.core.common.toEpochMillis
 import com.elkusnandi.core.design.components.ConfirmDialog
 import com.elkusnandi.core.design.components.CountDownItem
 import com.elkusnandi.core.design.theme.UntilThenTheme
@@ -61,7 +62,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import java.time.Instant
-import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 @AndroidEntryPoint
@@ -85,8 +86,8 @@ class CountdownScreenFragment : Fragment() {
                                 countDownId ?: 0L,
                                 title,
                                 ZonedDateTime.ofInstant(
-                                    Instant.ofEpochSecond(dateTime),
-                                    ZoneId.systemDefault()
+                                    Instant.ofEpochSecond(dateTime / 1000),
+                                    ZoneOffset.UTC
                                 ),
                                 ""
                             )
@@ -147,7 +148,10 @@ fun CountdownScreen(
                         countdowns = countdowns,
                         onClickItem = {
                             selectedCountdown = it
-                            bottomSheetState.expandBottomSheet()
+                            bottomSheetState.expandBottomSheet(
+                                it.title,
+                                it.dateTime.toEpochMillis()
+                            )
                         },
                         onLongClickItem = {
                             showConfirmDialog = it
@@ -157,9 +161,14 @@ fun CountdownScreen(
         }
 
         BottomSheetCountdown(
-            selectedCountdown,
             state = bottomSheetState,
-            onCreateCountdown = onCreateCountdown
+            onCreateCountdown = { title, dateTime ->
+                onCreateCountdown(
+                    title,
+                    dateTime,
+                    selectedCountdown?.id
+                )
+            }
         )
     }
 

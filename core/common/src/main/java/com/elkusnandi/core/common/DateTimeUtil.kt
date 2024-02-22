@@ -2,9 +2,11 @@ package com.elkusnandi.core.common
 
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
@@ -38,6 +40,10 @@ fun stringDateTimeToEpoch(dateTime: String): Long {
     }
 }
 
+fun ZonedDateTime.toEpochMillis(): Long {
+    return this.toEpochSecond() * 1000L
+}
+
 fun String.addZeroPrefix(): String {
     return if (length == 1) {
         "0$this"
@@ -53,4 +59,10 @@ fun String.addZeroPrefix(): String {
         }
     }
 }
-// -1 -10 -20
+
+var formatter = lazy {
+    DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm a", Locale.getDefault())
+}
+
+fun LocalDateTime.toDefaultDateTimeFormat(): String = this.format(formatter.value)
+fun ZonedDateTime.toDefaultDateTimeFormat(): String = this.format(formatter.value)
