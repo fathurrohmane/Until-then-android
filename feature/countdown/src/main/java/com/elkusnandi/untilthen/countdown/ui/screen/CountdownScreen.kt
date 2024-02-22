@@ -121,7 +121,7 @@ fun CountdownScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                text = { Text("Create") },
+                text = { Text(text = stringResource(id = R.string.create)) },
                 icon = { Icon(Icons.Filled.Add, contentDescription = "") },
                 onClick = {
                     selectedCountdown = null
