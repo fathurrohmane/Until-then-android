@@ -3,8 +3,8 @@ package com.elkusnandi.data.countdown.di
 import com.elkusnandi.data.countdown.source.CountdownRepository
 import com.elkusnandi.data.countdown.source.DefaultCountdownRepository
 import com.elkusnandi.data.countdown.source.local.LocalCountdownDataSource
-import com.elkusnandi.data.di.DefaultDispatcher
-import com.elkusnandi.data.di.Dispatcher
+import com.elkusnandi.core.common.di.DefaultDispatcher
+import com.elkusnandi.core.common.di.Dispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

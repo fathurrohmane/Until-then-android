@@ -9,8 +9,8 @@ import com.elkusnandi.data.countdown.model.toEntity
 import com.elkusnandi.data.countdown.source.local.CountdownLocalDataSource
 import com.elkusnandi.data.countdown.source.local.model.CountdownEntity
 import com.elkusnandi.data.countdown.source.local.model.toModel
-import com.elkusnandi.data.di.DefaultDispatcher
-import com.elkusnandi.data.di.Dispatcher
+import com.elkusnandi.core.common.di.DefaultDispatcher
+import com.elkusnandi.core.common.di.Dispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map

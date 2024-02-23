@@ -1,4 +1,4 @@
-package com.elkusnandi.data.di
+package com.elkusnandi.core.common.di
 
 import javax.inject.Qualifier
 
