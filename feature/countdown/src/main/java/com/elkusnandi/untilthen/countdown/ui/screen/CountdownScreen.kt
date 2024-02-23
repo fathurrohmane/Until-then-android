@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -30,7 +33,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,12 +47,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.paging.LoadState
+import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.elkusnandi.core.common.getDuration
 import com.elkusnandi.core.common.toEpochMillis
+import com.elkusnandi.core.design.components.BasicInfoView
+import com.elkusnandi.core.design.components.BasicItemInfoView
 import com.elkusnandi.core.design.components.ConfirmDialog
 import com.elkusnandi.core.design.components.CountDownItem
 import com.elkusnandi.core.design.theme.UntilThenTheme
@@ -115,7 +120,7 @@ fun CountdownScreen(
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Until then") },
+                title = { Text(text = stringResource(id = R.string.countdown)) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
@@ -140,7 +145,13 @@ fun CountdownScreen(
                 }
 
                 is LoadState.Error -> {
-                    // todo
+                    val loadState = countdowns.loadState.refresh as LoadState.Error
+                    BasicInfoView(text = loadState.error.message.toString()) {
+                        Button(onClick = { countdowns.refresh() }) {
+                            Text(text = stringResource(id = R.string.retry))
+                        }
+                    }
+
                 }
 
                 is LoadState.NotLoading -> {
@@ -194,24 +205,25 @@ private fun CountdownLazyColumn(
     onClickItem: (Countdown) -> Unit = {},
     onLongClickItem: (Countdown) -> Unit = {}
 ) {
-    val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
     var currentTime by remember { mutableStateOf(ZonedDateTime.now()) }
-    var isRunning by remember { mutableStateOf(true) }
+    var isCountdownRunning by remember { mutableStateOf(true) }
 
-    LaunchedEffect(key1 = currentTime, key2 = isRunning) {
-        if (isRunning) {
-            delay(1000)
+    // Update timer every second
+    LaunchedEffect(key1 = currentTime, key2 = isCountdownRunning) {
+        if (isCountdownRunning) {
             currentTime = ZonedDateTime.now()
+            delay(1000)
         }
     }
 
+    // Only start countdown when app in foreground
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
-                isRunning = true
+                isCountdownRunning = true
             } else if (event == Lifecycle.Event.ON_STOP) {
-                isRunning = false
+                isCountdownRunning = false
             }
         }
 
@@ -227,7 +239,7 @@ private fun CountdownLazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.fillMaxSize()
     ) {
-
+        // content
         items(countdowns.itemCount, key = countdowns.itemKey { it.id }) {
             val countdown = countdowns[it] ?: return@items
 
@@ -239,6 +251,7 @@ private fun CountdownLazyColumn(
             )
         }
 
+        // Append loading
         if (countdowns.loadState.append == LoadState.Loading) {
             item {
                 CircularProgressIndicator(
@@ -247,13 +260,20 @@ private fun CountdownLazyColumn(
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 )
             }
-        } else if (countdowns.loadState.append is LoadState.Error) {
+        } else if (countdowns.loadState.append is LoadState.Error) { // Append error
             val errorMessage =
                 (countdowns.loadState.append as LoadState.Error).error.message.toString()
             item {
-//                UserPagingError(errorMessage) {
-//                    users.retry()
-//                }
+                BasicItemInfoView(
+                    text = errorMessage,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    TextButton(onClick = {
+                        countdowns.retry()
+                    }) {
+                        Text(text = stringResource(id = R.string.retry))
+                    }
+                }
             }
         }
     }
@@ -265,11 +285,21 @@ private fun CountdownScreenPreview() {
     val fakeCountdown =
         flowOf(
             PagingData.from(
-                listOf(Countdown(0L, "Interview", ZonedDateTime.now().plusDays(5), ""))
+                listOf(Countdown(0L, "Interview", ZonedDateTime.now().plusDays(5), "")),
+                sourceLoadStates = LoadStates(
+                    refresh = LoadState.NotLoading(false),
+                    append = LoadState.NotLoading(false),
+                    prepend = LoadState.NotLoading(false),
+                ),
+                mediatorLoadStates = LoadStates(
+                    refresh = LoadState.NotLoading(false),
+                    append = LoadState.NotLoading(false),
+                    prepend = LoadState.NotLoading(false),
+                ),
             )
         ).collectAsLazyPagingItems()
 
-    UntilThenTheme {
+    MaterialTheme { // using theme from another module doesn't work
         CountdownScreen(fakeCountdown, { _, _, _ -> }, {})
     }
 }
