@@ -61,7 +61,7 @@ fun String.addZeroPrefix(): String {
 }
 
 var formatter = lazy {
-    DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm a", Locale.getDefault())
+    DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a", Locale.getDefault())
 }
 
 fun LocalDateTime.toDefaultDateTimeFormat(): String = this.format(formatter.value)
