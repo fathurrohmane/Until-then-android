@@ -18,6 +18,8 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/countdown" />
             <option value="$PROJECT_DIR$/feature/widget" />
+            <option value="$PROJECT_DIR$/test" />
+            <option value="$PROJECT_DIR$/test/app" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
