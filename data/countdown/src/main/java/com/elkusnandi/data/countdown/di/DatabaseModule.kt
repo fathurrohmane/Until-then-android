@@ -14,7 +14,7 @@ const val database_name = "database.db"
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DatabaseModule {
+internal class DatabaseModule {
 
     @Provides
     fun provideRoomDatabase(@ApplicationContext context: Context): RoomLocalDatabase {

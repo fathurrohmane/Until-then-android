@@ -12,7 +12,7 @@ import com.elkusnandi.data.countdown.source.local.model.CountdownEntity
 import com.elkusnandi.data.countdown.source.local.model.ZonedDateTimeTypeConverter
 
 @Dao
-interface LocalCountdownDataSource : CountdownLocalDataSource {
+internal interface LocalCountdownDataSource : CountdownLocalDataSource {
 
     @Query("SELECT * FROM CountdownEntity")
     override fun getAllCountdown(): PagingSource<Int, CountdownEntity>
@@ -33,6 +33,6 @@ interface LocalCountdownDataSource : CountdownLocalDataSource {
     version = 1
 )
 @TypeConverters(ZonedDateTimeTypeConverter::class)
-abstract class RoomLocalDatabase : RoomDatabase() {
+internal abstract class RoomLocalDatabase : RoomDatabase() {
     abstract fun countdownDao(): LocalCountdownDataSource
 }

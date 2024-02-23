@@ -8,7 +8,7 @@ import com.elkusnandi.data.countdown.model.Countdown
 import java.time.ZonedDateTime
 
 @Entity
-data class CountdownEntity(
+internal data class CountdownEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     @ColumnInfo
@@ -18,7 +18,7 @@ data class CountdownEntity(
     val color: String
 )
 
-object ZonedDateTimeTypeConverter {
+internal object ZonedDateTimeTypeConverter {
     @TypeConverter
     fun fromString(value: String): ZonedDateTime {
         return ZonedDateTime.parse(value)
@@ -30,6 +30,6 @@ object ZonedDateTimeTypeConverter {
     }
 }
 
-fun CountdownEntity.toModel() = Countdown(
+internal fun CountdownEntity.toModel() = Countdown(
     id, title, dateTime, color
 )

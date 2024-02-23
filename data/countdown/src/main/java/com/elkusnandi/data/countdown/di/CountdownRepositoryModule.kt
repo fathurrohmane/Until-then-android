@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 @InstallIn(SingletonComponent::class)
 @Module
-class RepositoryModule {
+internal class RepositoryModule {
 
     @Provides
     fun provideRepository(

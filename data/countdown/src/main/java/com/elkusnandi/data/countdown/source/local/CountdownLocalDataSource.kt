@@ -3,7 +3,7 @@ package com.elkusnandi.data.countdown.source.local
 import androidx.paging.PagingSource
 import com.elkusnandi.data.countdown.source.local.model.CountdownEntity
 
-interface CountdownLocalDataSource {
+internal interface CountdownLocalDataSource {
 
     fun getAllCountdown(): PagingSource<Int, CountdownEntity>
 

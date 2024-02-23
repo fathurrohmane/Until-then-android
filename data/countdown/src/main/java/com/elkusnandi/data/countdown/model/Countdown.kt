@@ -10,6 +10,6 @@ data class Countdown(
     val color: String
 )
 
-fun Countdown.toEntity() = CountdownEntity(
+internal fun Countdown.toEntity() = CountdownEntity(
     id, title, dateTime, color
 )
