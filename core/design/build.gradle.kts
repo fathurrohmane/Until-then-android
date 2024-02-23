@@ -4,12 +4,20 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+val buildToolsVersion: String by rootProject.extra
+val compileSdkVersion: String by rootProject.extra
+val targetSdkVersion: Int by rootProject.extra
+val minSdkVersion: Int by rootProject.extra
+val javaVersion: JavaVersion by rootProject.extra
+val kotlinJvmTarget: String by rootProject.extra
+val composeCompiler: String by rootProject.extra
+
 android {
     namespace = "com.elkusnandi.core.design"
-    compileSdk = 34
+    compileSdk = targetSdkVersion
 
     defaultConfig {
-        minSdk = 24
+        minSdk = minSdkVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -28,16 +36,16 @@ android {
         compose = true
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
 
         isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = kotlinJvmTarget
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
+        kotlinCompilerExtensionVersion = composeCompiler
     }
 }
 

@@ -6,12 +6,19 @@ plugins {
     alias(libs.plugins.kapt)
 }
 
+val buildToolsVersion: String by rootProject.extra
+val compileSdkVersion: String by rootProject.extra
+val targetSdkVersion: Int by rootProject.extra
+val minSdkVersion: Int by rootProject.extra
+val javaVersion: JavaVersion by rootProject.extra
+val kotlinJvmTarget: String by rootProject.extra
+
 android {
     namespace = "com.elkusnandi.data.countdown"
-    compileSdk = 34
+    compileSdk = targetSdkVersion
 
     defaultConfig {
-        minSdk = 24
+        minSdk = minSdkVersion
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -27,14 +34,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
 
         isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = kotlinJvmTarget
     }
 
     buildFeatures {
