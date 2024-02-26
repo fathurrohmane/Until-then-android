@@ -10,4 +10,7 @@
     <string name="delete_title">Delete this item?</string>
     <string name="delete_body">This action cannot be undone.</string>
     <string name="retry">Retry</string>
+    <string name="no_item">No countdown</string>
+    <string name="no_item_detail">Add countdown by pressing create button</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

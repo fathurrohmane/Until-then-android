@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -44,9 +45,10 @@ private fun InfoView(
 @Composable
 fun BasicInfoView(
     text: String,
+    detail: String?,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Outlined.Info,
-    action: @Composable () -> Unit
+    action: @Composable () -> Unit = {}
 ) {
     InfoView(topSlot = {
         Image(
@@ -55,10 +57,18 @@ fun BasicInfoView(
             modifier = Modifier.size(56.dp)
         )
     }, middleSlot = {
-        Text(text = text, style = MaterialTheme.typography.bodyLarge)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = text, style = MaterialTheme.typography.titleSmall)
+            if (detail != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = detail, style = MaterialTheme.typography.bodyMedium)
+            }
+        }
     }, bottomSlot = {
         action()
-
     }, modifier = modifier)
 }
 
@@ -66,7 +76,7 @@ fun BasicInfoView(
 @Composable
 private fun BasicInfoViewPreview() {
     MaterialTheme {
-        BasicInfoView(text = "Something went wrong") {
+        BasicInfoView(text = "Something went wrong", "Please try again layer or contact support") {
             Button(onClick = { }) {
                 Text(text = "Retry")
             }

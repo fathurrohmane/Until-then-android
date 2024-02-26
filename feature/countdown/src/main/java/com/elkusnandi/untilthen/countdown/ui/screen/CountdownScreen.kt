@@ -146,7 +146,10 @@ fun CountdownScreen(
 
                 is LoadState.Error -> {
                     val loadState = countdowns.loadState.refresh as LoadState.Error
-                    BasicInfoView(text = loadState.error.message.toString()) {
+                    BasicInfoView(
+                        text = stringResource(id = R.string.something_went_wrong),
+                        detail = loadState.error.message.toString()
+                    ) {
                         Button(onClick = { countdowns.refresh() }) {
                             Text(text = stringResource(id = R.string.retry))
                         }
@@ -234,49 +237,57 @@ private fun CountdownLazyColumn(
         }
     }
 
-    LazyColumn(
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.fillMaxSize()
-    ) {
-        // content
-        items(countdowns.itemCount, key = countdowns.itemKey { it.id }) {
-            val countdown = countdowns[it] ?: return@items
+    if (countdowns.loadState.refresh == LoadState.NotLoading(false) && countdowns.itemCount == 0) {
+        BasicInfoView(
+            text = stringResource(id = R.string.no_item),
+            detail = stringResource(id = R.string.no_item_detail)
+        )
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = modifier.fillMaxSize()
+        ) {
+            // content
+            items(countdowns.itemCount, key = countdowns.itemKey { it.id }) {
+                val countdown = countdowns[it] ?: return@items
 
-            CountDownItem(
-                title = countdown.title,
-                duration = countdown.dateTime.getDuration(currentTime = currentTime),
-                onClick = { onClickItem(countdown) },
-                onLongClick = { onLongClickItem(countdown) }
-            )
-        }
-
-        // Append loading
-        if (countdowns.loadState.append == LoadState.Loading) {
-            item {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
+                CountDownItem(
+                    title = countdown.title,
+                    duration = countdown.dateTime.getDuration(currentTime = currentTime),
+                    onClick = { onClickItem(countdown) },
+                    onLongClick = { onLongClickItem(countdown) }
                 )
             }
-        } else if (countdowns.loadState.append is LoadState.Error) { // Append error
-            val errorMessage =
-                (countdowns.loadState.append as LoadState.Error).error.message.toString()
-            item {
-                BasicItemInfoView(
-                    text = errorMessage,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                ) {
-                    TextButton(onClick = {
-                        countdowns.retry()
-                    }) {
-                        Text(text = stringResource(id = R.string.retry))
+
+            // Append loading
+            if (countdowns.loadState.append == LoadState.Loading) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
+            } else if (countdowns.loadState.append is LoadState.Error) { // Append error
+                val errorMessage =
+                    (countdowns.loadState.append as LoadState.Error).error.message.toString()
+                item {
+                    BasicItemInfoView(
+                        text = errorMessage,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    ) {
+                        TextButton(onClick = {
+                            countdowns.retry()
+                        }) {
+                            Text(text = stringResource(id = R.string.retry))
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 @Preview
