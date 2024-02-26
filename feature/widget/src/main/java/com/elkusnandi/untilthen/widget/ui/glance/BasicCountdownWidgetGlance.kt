@@ -87,7 +87,7 @@ fun ClockFaceGlance(
                 day = Color.White,
                 night = Color.Black
             )
-            .cornerRadius(16.dp)
+            .cornerRadius(24.dp)
             .appWidgetBackground(),
         verticalAlignment = Alignment.Vertical.CenterVertically,
     ) {
