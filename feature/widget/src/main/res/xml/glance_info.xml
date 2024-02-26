@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:configure="com.elkusnandi.untilthen.widget.ui.screen.WidgetConfigActivity"
     android:description="@string/glance_description"
     android:initialLayout="@layout/glance_default_loading_layout"
-    android:minWidth="40dp"
-    android:minHeight="40dp"
+    android:minWidth="90dp"
+    android:minHeight="50dp"
+    android:minResizeWidth="90dp"
+    android:minResizeHeight="50dp"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="2"
     android:targetCellHeight="1"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen"
-    android:widgetFeatures="reconfigurable" />
+    android:widgetFeatures="reconfigurable"
+    tools:targetApi="s" />
+
+    <!--https://developer.android.com/develop/ui/views/appwidgets#AppWidgetProviderInfo-->
