@@ -109,7 +109,7 @@ fun ClockFaceGlance(
                 )
             )
             Spacer(modifier = GlanceModifier.width(8.dp))
-            if (durations == 0L) {
+            if (durations != 0L) {
                 Text(
                     text = LocalContext.current.getString(R.string.days),
                     style = UntilThenTextStyle.default
