@@ -4,4 +4,6 @@
     <string name="select_countdown">Select countdown</string>
     <string name="days">Days</string>
     <string name="today">Today</string>
+    <string name="glance_preview_title">Birthday 🎂</string>
+    <string name="glance_preview_countdown">180</string>
 </resources>
