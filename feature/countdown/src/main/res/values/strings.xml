@@ -13,4 +13,6 @@
     <string name="no_item">No countdown</string>
     <string name="no_item_detail">Add countdown by pressing create button</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="title_empty_error">Title can\'t be empty</string>
+    <string name="date_time_empty_error">Date time can\'t be empty</string>
 </resources>

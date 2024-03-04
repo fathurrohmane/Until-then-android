@@ -65,11 +65,20 @@ fun BottomSheetCountdown(
                     text = stringResource(id = R.string.title),
                     style = MaterialTheme.typography.titleMedium
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = state.titleText ?: "",
                     onValueChange = { state.setTitle(it) },
+                    isError = state.titleTextIsError,
+                    supportingText = {
+                        if (state.titleTextIsError) {
+                            Text(
+                                text = stringResource(id = R.string.title_empty_error),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    },
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -86,21 +95,32 @@ fun BottomSheetCountdown(
                     } ?: ""
                 else
                     stringResource(id = R.string.select_date_time)
-                ReadOnlyTextField(dateTimeValue) {
-                    showDatePicker = true
-                }
+                ReadOnlyTextField(
+                    dateTimeValue,
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = state.dateTimeIsError,
+                    supportingText = {
+                        if (state.dateTimeIsError) {
+                            Text(
+                                text = stringResource(id = R.string.date_time_empty_error),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                    }, onClick = {
+                        showDatePicker = true
+                    }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        scope.launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
-                            val title = state.titleText
-                            if (title != null) {
-                                onCreateCountdown(title, state.dateTimeValue!!)
+                        state.errorCheckForSubmit { title, dateTime ->
+                            scope.launch {
+                                sheetState.hide()
+                            }.invokeOnCompletion {
+                                onCreateCountdown(title, dateTime)
+                                state.hideBottomSheet()
                             }
-                            state.hideBottomSheet()
                         }
 
                     }) {
@@ -127,8 +147,12 @@ fun BottomSheetCountdown(
 class BottomSheetCountState() {
     var titleText by mutableStateOf<String?>(null)
         private set
+    var titleTextIsError by mutableStateOf(false)
+        private set
 
     var dateTimeValue by mutableStateOf<Long?>(null)
+        private set
+    var dateTimeIsError by mutableStateOf(false)
         private set
 
     var showBottomSheet by mutableStateOf(false)
@@ -139,10 +163,16 @@ class BottomSheetCountState() {
 
     fun setTitle(title: String) {
         titleText = title
+        if (titleTextIsError && title.isNotBlank()) {
+            titleTextIsError = false
+        }
     }
 
     fun setDateTime(dateTime: Long) {
         dateTimeValue = dateTime
+        if (dateTimeIsError && dateTime >= 0L) {
+            dateTimeIsError = false
+        }
     }
 
     fun expandBottomSheet(title: String? = null, selectedDateTimeValue: Long? = null) {
@@ -150,12 +180,30 @@ class BottomSheetCountState() {
         dateTimeValue = selectedDateTimeValue
         isCreateNewData = title == null && selectedDateTimeValue == null
         showBottomSheet = true
+        titleTextIsError = false
+        dateTimeIsError = false
     }
 
     fun hideBottomSheet() {
         showBottomSheet = false
         titleText = null
         dateTimeValue = null
+        titleTextIsError = false
+        dateTimeIsError = false
+    }
+
+    fun errorCheckForSubmit(onValid: (titleText: String, dateTimeValue: Long) -> Unit) {
+        if (titleText.isNullOrBlank()) {
+            titleTextIsError = true
+        }
+
+        if (dateTimeValue == null) {
+            dateTimeIsError = true
+        }
+
+        if (!titleTextIsError && !dateTimeIsError) {
+            onValid(titleText!!, dateTimeValue!!)
+        }
     }
 }
 
