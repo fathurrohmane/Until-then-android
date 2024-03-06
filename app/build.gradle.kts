@@ -65,7 +65,6 @@ dependencies {
 
     implementation(project(":core:design"))
     implementation(project(":feature:countdown"))
-    implementation(project(":feature:widget"))
 
     coreLibraryDesugaring(libs.android.tools.desugarlibs)
 

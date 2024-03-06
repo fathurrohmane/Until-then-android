@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget.ui.glance
+package com.elkusnandi.untilthen.countdown.widget.ui.glance
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color

@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget.data
+package com.elkusnandi.untilthen.countdown.widget.data
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException

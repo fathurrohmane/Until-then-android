@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget.ui.screen
+package com.elkusnandi.untilthen.countdown.widget.ui.screen
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -48,10 +48,10 @@ import com.elkusnandi.core.common.getDuration
 import com.elkusnandi.core.design.components.CountDownItem
 import com.elkusnandi.core.design.theme.UntilThenTheme
 import com.elkusnandi.data.countdown.model.Countdown
-import com.elkusnandi.untilthen.widget.R
-import com.elkusnandi.untilthen.widget.data.WidgetConfig
-import com.elkusnandi.untilthen.widget.data.WidgetDataStateDefinition
-import com.elkusnandi.untilthen.widget.ui.glance.MyAppWidget
+import com.elkusnandi.untilthen.countdown.R
+import com.elkusnandi.untilthen.countdown.widget.data.WidgetConfig
+import com.elkusnandi.untilthen.countdown.widget.data.WidgetDataStateDefinition
+import com.elkusnandi.untilthen.countdown.widget.ui.glance.MyAppWidget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking

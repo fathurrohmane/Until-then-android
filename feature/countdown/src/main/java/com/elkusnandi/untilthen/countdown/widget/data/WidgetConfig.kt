@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget.data
+package com.elkusnandi.untilthen.countdown.widget.data
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

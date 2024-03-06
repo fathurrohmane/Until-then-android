@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val buildToolsVersion: String by rootProject.extra
@@ -93,6 +94,9 @@ dependencies {
     implementation(libs.androidx.glance.appwidget)
     // For interop APIs with Material 3
     implementation(libs.androidx.glance.material3)
+
+    //json
+    implementation(libs.kotlinx.serialization.json)
 
     // Paging
     implementation(libs.androidx.paging)

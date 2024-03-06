@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget.ui.screen
+package com.elkusnandi.untilthen.countdown.widget.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

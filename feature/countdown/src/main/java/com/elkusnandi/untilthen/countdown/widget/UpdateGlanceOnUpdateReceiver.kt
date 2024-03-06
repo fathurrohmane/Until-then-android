@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget
+package com.elkusnandi.untilthen.countdown.widget
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -2,11 +2,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
+
         <activity
-            android:name=".CountdownConfigActivity"
-            android:exported="false"
-            android:label="@string/title_activity_countdown_config"
-            android:theme="@style/Theme.UntilThen" />
+            android:name="com.elkusnandi.untilthen.countdown.widget.ui.screen.WidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UntilThen">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+
+        </activity>
+
+        <receiver
+            android:name="com.elkusnandi.untilthen.countdown.widget.ui.glance.MyAppWidgetReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/glance_info" />
+        </receiver>
+
+        <receiver
+            android:name="com.elkusnandi.untilthen.countdown.widget.UpdateGlanceOnUpdateReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

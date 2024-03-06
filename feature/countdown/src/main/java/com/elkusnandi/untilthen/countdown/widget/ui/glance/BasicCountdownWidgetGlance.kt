@@ -1,4 +1,4 @@
-package com.elkusnandi.untilthen.widget.ui.glance
+package com.elkusnandi.untilthen.countdown.widget.ui.glance
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -27,9 +27,9 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import com.elkusnandi.untilthen.widget.R
-import com.elkusnandi.untilthen.widget.data.WidgetConfig
-import com.elkusnandi.untilthen.widget.data.WidgetDataStateDefinition
+import com.elkusnandi.untilthen.countdown.R
+import com.elkusnandi.untilthen.countdown.widget.data.WidgetConfig
+import com.elkusnandi.untilthen.countdown.widget.data.WidgetDataStateDefinition
 import java.time.Duration
 import java.time.ZonedDateTime
 
