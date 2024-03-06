@@ -1,5 +1,8 @@
 package com.elkusnandi.untilthen.countdown.ui.screen
 
+import android.app.Activity.RESULT_OK
+import android.appwidget.AppWidgetManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,6 +66,9 @@ import com.elkusnandi.data.countdown.model.Countdown
 import com.elkusnandi.untilthen.countdown.R
 import com.elkusnandi.untilthen.countdown.ui.component.BottomSheetCountdown
 import com.elkusnandi.untilthen.countdown.ui.component.rememberBottomSheetCountState
+import com.elkusnandi.untilthen.countdown.widget.data.WidgetConfig
+import com.elkusnandi.untilthen.countdown.widget.getClockConfigByWidgetId
+import com.elkusnandi.untilthen.countdown.widget.saveConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
@@ -80,10 +86,19 @@ class CountdownScreenFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireActivity()).apply {
+
+        val appWidgetId = activity?.intent?.extras?.getInt(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
+
+        val config = requireContext().getClockConfigByWidgetId(appWidgetId)
+
         setContent {
             UntilThenTheme {
                 val countdowns = viewModel.countdowns.collectAsLazyPagingItems()
                 CountdownScreen(
+                    isSelectingWidget = appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID,
                     countdowns = countdowns,
                     onCreateCountdown = { title, dateTime, countDownId ->
                         viewModel.addCountdown(
@@ -100,6 +115,17 @@ class CountdownScreenFragment : Fragment() {
                     },
                     onDeleteCountdown = {
                         viewModel.deleteCountdown(it)
+                    }, onSelectCountdown = {
+                        saveConfig(
+                            appWidgetId,
+                            context,
+                            WidgetConfig(it.title, it.dateTime)
+                        ) {
+                            val resultValue = Intent()
+                            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                            activity?.setResult(RESULT_OK, resultValue)
+                            activity?.finish()
+                        }
                     })
             }
         }
@@ -109,9 +135,11 @@ class CountdownScreenFragment : Fragment() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountdownScreen(
+    isSelectingWidget: Boolean,
     countdowns: LazyPagingItems<Countdown>,
     onCreateCountdown: (String, Long, Long?) -> Unit,
     onDeleteCountdown: (Countdown) -> Unit,
+    onSelectCountdown: (Countdown) -> Unit
 ) {
     val bottomSheetState = rememberBottomSheetCountState()
     var selectedCountdown by remember { mutableStateOf<Countdown?>(null) }
@@ -120,7 +148,7 @@ fun CountdownScreen(
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.countdown)) },
+                title = { Text(text = stringResource(id = if (isSelectingWidget) R.string.select_countdown else R.string.countdown)) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
@@ -161,11 +189,15 @@ fun CountdownScreen(
                     CountdownLazyColumn(
                         countdowns = countdowns,
                         onClickItem = {
-                            selectedCountdown = it
-                            bottomSheetState.expandBottomSheet(
-                                it.title,
-                                it.dateTime.toEpochMillis()
-                            )
+                            if (isSelectingWidget) {
+                                onSelectCountdown(it)
+                            } else {
+                                selectedCountdown = it
+                                bottomSheetState.expandBottomSheet(
+                                    it.title,
+                                    it.dateTime.toEpochMillis()
+                                )
+                            }
                         },
                         onLongClickItem = {
                             showConfirmDialog = it
@@ -311,6 +343,6 @@ private fun CountdownScreenPreview() {
         ).collectAsLazyPagingItems()
 
     MaterialTheme { // using theme from another module doesn't work
-        CountdownScreen(fakeCountdown, { _, _, _ -> }, {})
+        CountdownScreen(false, fakeCountdown, { _, _, _ -> }, {}, {})
     }
 }
