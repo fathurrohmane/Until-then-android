@@ -80,3 +80,18 @@ private fun BasicItemInfoViewPreview() {
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun BasicItemInfoViewLongText_Preview() {
+    MaterialTheme {
+        BasicItemInfoView(
+            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            TextButton(onClick = { }) {
+                Text(text = "Retry")
+            }
+        }
+    }
+}

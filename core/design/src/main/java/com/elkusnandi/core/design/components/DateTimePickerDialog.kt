@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.elkusnandi.core.design.R
 import java.time.Instant
@@ -44,7 +45,7 @@ fun DateTimePickerCountdownDialog(
     state: DateTimePickerState
 ) {
     if (showDatePicker) {
-        var datePickerState =
+        val datePickerState =
             rememberDatePickerState(initialSelectedDateMillis = state.dateEpochSeconds * 1000)
         var showTimePickers by remember { mutableStateOf(false) }
         DatePickerDialog(
@@ -159,5 +160,20 @@ fun rememberDateTimePickerState(initialSelectedDateTimeMillis: Long?): DateTimeP
         } else {
             DateTimePickerState()
         }
+    }
+}
+
+@Preview()
+@Composable
+private fun DatePickerDialogPreview() {
+    MaterialTheme {
+        DateTimePickerCountdownDialog(
+            showDatePicker = true,
+            onDismiss = { /*TODO*/ },
+            onConfirm = { /*TODO*/ },
+            state = rememberDateTimePickerState(
+                initialSelectedDateTimeMillis = ZonedDateTime.now().toEpochSecond() * 1000L
+            )
+        )
     }
 }
